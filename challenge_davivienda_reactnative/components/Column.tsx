@@ -3,20 +3,16 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { DraxView } from 'react-native-drax';
 import TaskCard from './TaskCard';
+import { Task } from './TaskDetail';
 
-interface Task { 
-  id: string; 
-  title: string; 
-  description?: string; 
-  status: string; 
-}
 interface Props {
   title: string;
   tasks: Task[];
   onDrop: (newStatus: string, task: Task) => void;
+  onTaskPress: (task: Task) => void;
 }
 
-export default function Column({ title, tasks, onDrop }: Props) {
+export default function Column({ title, tasks, onDrop, onTaskPress }: Props) {
   return (
     <DraxView
       style={styles.draxContainer}
@@ -26,7 +22,7 @@ export default function Column({ title, tasks, onDrop }: Props) {
         <View style={styles.column}>
           <Text style={styles.columnTitle}>{title}</Text>
           {tasks.map(task => (
-            <TaskCard key={task.id} task={task} />
+            <TaskCard key={task.id} task={task} onPress={onTaskPress} />
           ))}
         </View>
       )}
@@ -36,15 +32,15 @@ export default function Column({ title, tasks, onDrop }: Props) {
 
 const styles = StyleSheet.create({
   draxContainer: {
-    flex: 1,   // Se expande para ocupar el espacio disponible en el board
+    flex: 1,
   },
   column: { 
     flex: 1,
     marginHorizontal: 5,
     padding: 10,
-    backgroundColor: '#fff',      // Fondo blanco para mantener uniformidad
+    backgroundColor: '#fff',
     borderRadius: 5,
-    minHeight: 400,               // Altura mínima fija para columnas sin elementos
+    minHeight: 400,
   },
   columnTitle: { 
     fontSize: 18, 

@@ -1,33 +1,31 @@
 // TaskCard.tsx
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 import { DraxView } from 'react-native-drax';
-
-interface Task {
-  id: string;
-  title: string;
-  description?: string;
-  status: string;
-}
+import { Task } from './TaskDetail';
 
 interface Props {
   task: Task;
+  onPress: (task: Task) => void;
 }
 
-export default function TaskCard({ task }: Props) {
+export default function TaskCard({ task, onPress }: Props) {
   return (
-    <DraxView payload={task} renderContent={() => (
-      <View style={styles.card}>
-        <Text style={styles.title}>{task.title}</Text>
-        {task.description && <Text style={styles.description}>{task.description}</Text>}
-      </View>
-    )} />
+    <DraxView 
+      payload={task} 
+      renderContent={() => (
+        <TouchableOpacity style={styles.card} onPress={() => onPress(task)}>
+          <Text style={styles.title}>{task.title}</Text>
+          {task.description && <Text style={styles.description}>{task.description}</Text>}
+        </TouchableOpacity>
+      )}
+    />
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff',  // Fondo blanco para la tarjeta
+    backgroundColor: '#fff',
     borderRadius: 5,
     padding: 10,
     marginVertical: 5,
@@ -38,7 +36,7 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: 'bold',
     fontSize: 16,
-    color: '#000',  // Texto oscuro para que se lea sobre fondo blanco
+    color: '#000',
   },
   description: {
     marginTop: 4,

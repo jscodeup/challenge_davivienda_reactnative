@@ -1,14 +1,8 @@
 // KanbanBoard.tsx
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Modal, StyleSheet, View, Button } from 'react-native';
 import Column from './Column';
-
-interface Task { 
-  id: string; 
-  title: string; 
-  description?: string; 
-  status: string; 
-}
+import TaskDetail, { Task } from './TaskDetail';
 
 const initialTasks: Task[] = [
   { id: '1', title: 'Conectar base de datos Firebase', description: 'Crear conexión para almacenar la información de las tareas', status: 'Por Hacer' },
@@ -18,6 +12,7 @@ const initialTasks: Task[] = [
 
 export default function KanbanBoard() {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   const handleDrop = (newStatus: string, draggedTask: Task) =>
     setTasks(prev =>
@@ -25,6 +20,11 @@ export default function KanbanBoard() {
         task.id === draggedTask.id ? { ...task, status: newStatus } : task
       )
     );
+
+  const handleSaveTask = (updatedTask: Task) => {
+    setTasks(prev => prev.map(task => task.id === updatedTask.id ? updatedTask : task));
+    setSelectedTask(null);
+  };
 
   return (
     <View style={styles.container}>
@@ -35,9 +35,16 @@ export default function KanbanBoard() {
             title={status}
             tasks={tasks.filter(t => t.status === status)}
             onDrop={handleDrop}
+            onTaskPress={(task: Task) => setSelectedTask(task)}
           />
         ))}
       </View>
+      <Modal visible={!!selectedTask} animationType="slide">
+        {selectedTask && (
+          <TaskDetail task={selectedTask} onSave={handleSaveTask} />
+        )}
+        <Button title="Cerrar" onPress={() => setSelectedTask(null)} />
+      </Modal>
     </View>
   );
 }
@@ -45,13 +52,13 @@ export default function KanbanBoard() {
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-    backgroundColor: '#fff',  // Fondo blanco uniforme
+    backgroundColor: '#fff', 
     padding: 10,
   },
   board: { 
-    flex: 1,
+    flex: 1, 
     flexDirection: 'row', 
-    justifyContent: 'space-evenly',  // Espacio equitativo entre columnas
-    alignItems: 'stretch',           // Forzamos que las columnas se estiren a toda la altura del board
+    justifyContent: 'space-evenly', 
+    alignItems: 'stretch',
   },
 });
