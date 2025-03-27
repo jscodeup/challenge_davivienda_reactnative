@@ -3,12 +3,23 @@ import React, { useState } from 'react';
 import { Modal, StyleSheet, View, Button } from 'react-native';
 import Column from './Column';
 import TaskDetail, { Task } from './TaskDetail';
+import { auth } from '../services/firebaseConfig';
+import { signOut } from 'firebase/auth';
+
 
 const initialTasks: Task[] = [
   { id: '1', title: 'Conectar base de datos Firebase', description: 'Crear conexión para almacenar la información de las tareas', status: 'Por Hacer' },
   { id: '2', title: 'Funcionalidad de arrastrar tarjetas', description: 'Implementar librería necesaria para poder arrastrar tarjetas entre estados', status: 'En Progreso' },
   { id: '3', title: 'Estructura Pantalla Inicial', description: 'Crear las clases necesarias para gestión de columnas y tarjetas de cada tarea', status: 'Listo' },
 ];
+
+const handleLogout = async () => {
+  try {
+    await signOut(auth);
+  } catch (error: any) {
+    console.error('Logout error:', error.message);
+  }
+};
 
 export default function KanbanBoard() {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
@@ -28,6 +39,8 @@ export default function KanbanBoard() {
 
   return (
     <View style={styles.container}>
+
+      <Button title="Cerrar sesión" onPress={handleLogout} />
       <View style={styles.board}>
         {['Por Hacer', 'En Progreso', 'Listo'].map(status => (
           <Column
@@ -50,15 +63,15 @@ export default function KanbanBoard() {
 }
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: '#fff', 
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
     padding: 10,
   },
-  board: { 
-    flex: 1, 
-    flexDirection: 'row', 
-    justifyContent: 'space-evenly', 
+  board: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
     alignItems: 'stretch',
   },
 });
