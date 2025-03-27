@@ -1,6 +1,6 @@
-
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { Text, StyleSheet } from 'react-native';
+import { DraxView } from 'react-native-drax';
 
 interface Task {
   id: string;
@@ -15,12 +15,10 @@ interface Props {
 
 export default function TaskCard({ task }: Props) {
   return (
-    <View style={styles.card}>
+    <DraxView style={styles.card} payload={task}>
       <Text style={styles.title}>{task.title}</Text>
-      {task.description ? (
-        <Text style={styles.description}>{task.description}</Text>
-      ) : null}
-    </View>
+      {task.description && <Text style={styles.description}>{task.description}</Text>}
+    </DraxView>
   );
 }
 
